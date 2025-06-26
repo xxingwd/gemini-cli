@@ -6,6 +6,7 @@
 
 import { Buffer } from 'buffer';
 import * as https from 'https';
+import { HttpsProxyAgent } from 'https-proxy-agent'
 import {
   StartSessionEvent,
   EndSessionEvent,
@@ -98,16 +99,16 @@ export class ClearcutLogger {
         },
       ];
       const body = JSON.stringify(request);
-      const options = {
+      const options : https.RequestOptions = {
         hostname: 'play.googleapis.com',
         path: '/log',
         method: 'POST',
         headers: { 'Content-Length': Buffer.byteLength(body) },
       };
-
-       if (this.config?.getProxy()) {
-+        options.agent = new HttpsProxyAgent(this.config.getProxy() as string);
-+      }
+      
+      if (this.config?.getProxy()) {
+        options.agent = new HttpsProxyAgent(this.config.getProxy() as string);
+      }
       
       const bufs: Buffer[] = [];
       const req = https.request(options, (res) => {
