@@ -104,6 +104,11 @@ export class ClearcutLogger {
         method: 'POST',
         headers: { 'Content-Length': Buffer.byteLength(body) },
       };
+
+       if (this.config?.getProxy()) {
++        options.agent = new HttpsProxyAgent(this.config.getProxy() as string);
++      }
+      
       const bufs: Buffer[] = [];
       const req = https.request(options, (res) => {
         res.on('data', (buf) => bufs.push(buf));
